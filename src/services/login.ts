@@ -7,13 +7,24 @@ export interface LoginParamsType {
   captcha: string;
 }
 
+export interface RegisterParamsType {
+  username: string;
+  password: string;
+  phone: string;
+  captcha: string;
+  prefix:string;
+  confirmPassword:string;
+  agreement?:boolean;
+}
+
+
 export async function fakeAccountLogin(params: LoginParamsType) {
   return request('/admin/login', {
     method: 'POST',
     data: params,
   });
 }
-export async function fakeAccountRegister(params: LoginParamsType) {
+export async function fakeAccountRegister(params: RegisterParamsType) {
   return request('/admin/register', {
     method: 'POST',
     data: params,

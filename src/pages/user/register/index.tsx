@@ -10,12 +10,12 @@ import {
     Select,
 } from 'antd';
 import { connect } from 'dva';
-import React, { useState } from 'react';
+import React, { useState,useRef, useEffect } from 'react';
 import { Dispatch, AnyAction } from 'redux';
 import { ConnectState } from '@/models/connect';
 import styles from './style.less';
 import { Link } from 'umi';
-import { LoginParamsType } from '@/services/login';
+import { RegisterParamsType } from '@/services/login';
 
 const { Option } = Select;
 interface LoginProps {
@@ -57,10 +57,11 @@ const tailFormItemLayout = {
 
 const Reigster: React.FC<LoginProps> = props => {
     const [form] = Form.useForm();
-    const [count, setCount] = useState(0)
+    const [count, setCount] = useState(0);
+    const timerId=useRef<any>(null)
 
-
-    const handleSubmit = (values: any) => {
+  
+    const handleSubmit = (values: RegisterParamsType) => {
         const { dispatch } = props;
         console.log(values)
         delete values.agreement;
@@ -83,15 +84,21 @@ const Reigster: React.FC<LoginProps> = props => {
         </Form.Item>
     );
 
+    useEffect(()=>{
+        return ()=>{
+            clearInterval(timerId&&timerId.current!)
+        }
+    },[])
+
     const onGetCaptcha = () => {
         let counter = 59;
         setCount(counter)
-        const interval = window.setInterval(() => {
+        timerId.current = setInterval(() => {
             counter -= 1;
             setCount(counter)
 
             if (counter === 0) {
-                clearInterval(interval);
+                clearInterval(timerId.current);
             }
         }, 1000);
     };

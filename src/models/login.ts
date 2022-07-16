@@ -3,7 +3,7 @@ import { Effect } from 'dva';
 import { stringify } from 'querystring';
 import router from 'umi/router';
 
-import { fakeAccountLogin, getFakeCaptcha } from '@/services/login';
+import { fakeAccountLogin, fakeAccountRegister, getFakeCaptcha } from '@/services/login';
 import { getPageQuery } from '@/utils/utils';
 import { message } from 'antd';
 import { reloadAuthorized } from '@/utils/Authorized';
@@ -19,6 +19,7 @@ export interface LoginModelType {
     login: Effect;
     getCaptcha: Effect;
     logout: Effect;
+    register:Effect;
   };
   reducers: {
     changeLoginStatus: Reducer<StateType>;
@@ -36,6 +37,48 @@ const Model: LoginModelType = {
     *login({ payload }, { call, put }) {
       try {
         const response = yield call(fakeAccountLogin, payload);
+
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response,
+        });
+
+        // Login successfully
+        if (response.success) {
+          const urlParams = new URL(window.location.href);
+          const params = getPageQuery();
+          let { redirect } = params as { redirect: string };
+          if (redirect) {
+            const redirectUrlParams = new URL(redirect);
+            if (redirectUrlParams.origin === urlParams.origin) {
+              redirect = redirect.substr(urlParams.origin.length);
+              if (redirect.match(/^\/.*#/)) {
+                redirect = redirect.substr(redirect.indexOf('#') + 1);
+              }
+            } else {
+              window.location.href = '/';
+              return;
+            }
+          }
+
+          localStorage.setItem('token', response.data.token);
+
+          reloadAuthorized();
+
+          router.replace(redirect || '/');
+        }
+      } catch (e) {
+        message.error(e.data.message);
+
+        yield put({
+          type: 'changeLoginStatus',
+          payload: e.data,
+        });
+      }
+    },
+    *register({ payload }, { call, put }) {
+      try {
+        const response = yield call(fakeAccountRegister, payload);
 
         yield put({
           type: 'changeLoginStatus',

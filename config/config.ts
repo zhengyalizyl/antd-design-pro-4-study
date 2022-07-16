@@ -19,12 +19,7 @@ const plugins: IPlugin[] = [
         hmr: true,
       },
       locale: {
-        // default false
-        enable: true,
-        // default zh-CN
-        default: 'zh-CN',
-        // default true, when it is true, will use `navigator.language` overwrite default
-        baseNavigator: true,
+     
       },
       dynamicImport: {
         loadingComponent: './components/PageLoading/index',
@@ -85,6 +80,11 @@ export default {
           name: 'login',
           path: '/user/login',
           component: './user/login',
+        },
+        {
+          name: 'register',
+          path: '/user/register',
+          component: './user/register',
         },
       ],
     },

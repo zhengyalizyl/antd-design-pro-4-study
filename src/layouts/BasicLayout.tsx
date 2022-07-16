@@ -9,7 +9,6 @@ import ProLayout, {
   Settings,
   DefaultFooter,
 } from '@ant-design/pro-layout';
-import { formatMessage } from 'umi-plugin-react/locale';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'umi';
 import { Dispatch } from 'redux';
@@ -55,18 +54,18 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
  */
 
 const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
-  menuList.map(item => {
+  menuList.map((item) => {
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
     return Authorized.check(item.authority, localItem, null) as MenuDataItem;
   });
 
 const defaultFooterDom = (
   <DefaultFooter
-    copyright="2019 蚂蚁金服体验技术部出品"
+    copyright="yrx出品"
     links={[
       {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
+        key: 'yar',
+        title: 'yax',
         href: 'https://pro.ant.design',
         blankTarget: true,
       },
@@ -77,8 +76,8 @@ const defaultFooterDom = (
         blankTarget: true,
       },
       {
-        key: 'Ant Design',
-        title: 'Ant Design',
+        key: 'yrx',
+        title: 'yrx',
         href: 'https://ant.design',
         blankTarget: true,
       },
@@ -88,7 +87,11 @@ const defaultFooterDom = (
 
 const footerRender: BasicLayoutProps['footerRender'] = () => {
   if (!isAntDesignPro()) {
-    return defaultFooterDom;
+    return (
+      <>
+        <DefaultFooter copyright="yrx出品" />
+      </>
+    );
   }
 
   return (
@@ -112,7 +115,7 @@ const footerRender: BasicLayoutProps['footerRender'] = () => {
   );
 };
 
-const BasicLayout: React.FC<BasicLayoutProps> = props => {
+const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   const {
     dispatch,
     children,
@@ -126,7 +129,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
    */
 
   const [menuData, setMenuData] = useState([]);
-
   useEffect(() => {
     if (dispatch) {
       dispatch({
@@ -156,12 +158,11 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
-  };
-  //@ts-ignore
+  }; // @ts-ignore
+
   return (
     <ProLayout
       logo={logo}
-      formatMessage={formatMessage}
       menuHeaderRender={(logoDom, titleDom) => (
         <Link to="/">
           {logoDom}
@@ -175,9 +176,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         }
 
         return <Link to={menuItemProps.path}>{defaultDom}</Link>;
-      }}
-   
-      // breadcrumbRender={(routers = []) => [
+      }} // breadcrumbRender={(routers = []) => [
       //   {
       //     path: '/',
       //     breadcrumbName: '首页',

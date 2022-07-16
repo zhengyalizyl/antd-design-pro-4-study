@@ -9,6 +9,7 @@ export interface CurrentUser {
   userid?: string;
   roles?: RoleData[];
   isAdmin?: boolean;
+  name: string,
 }
 
 export interface UserModelState {
